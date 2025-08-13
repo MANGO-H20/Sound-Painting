@@ -12,8 +12,9 @@ const api = axios.create(config);
 
 export default function FileUpload() {
   const [uploadStatus, setUploadStatus] = useState(null);
-  const [soundFile, setSoundFile] = (useState < File) | (null > null);
-  async function upload() {
+  const [soundFile, setSoundFile] = useState(null);
+
+  async function upload(e) {
     if (!soundFile) return;
     setUploadStatus("uploading");
 
@@ -21,22 +22,25 @@ export default function FileUpload() {
     form.append("file", soundFile);
 
     try {
-      await api.post("/upload_sound_form", form);
+      let res = await api.post("/upload_sound", form);
+      console.log(res);
+      setUploadStatus("success");
     } catch (error) {
       console.error(error);
+      setUploadStatus("failed");
     }
   }
   function handleFileChange(e) {
-    if (e.target.file) {
-      setSoundFile(e.target.file[0]);
+    if (e.target.files) {
+      setSoundFile(e.target.files[0]);
     }
   }
   return (
-    <form className="upload_form ">
-      <input type="file" name="sound_file" onChange={handleFileChange} />
+    <>
       <button type="upload" onClick={upload}>
         Upload
       </button>
-    </form>
+      <input type="file" name="sound_file" onChange={handleFileChange} />
+    </>
   );
 }
