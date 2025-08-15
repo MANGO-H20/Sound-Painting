@@ -66,7 +66,7 @@ def spectrogram_creation(sound_path):
     frame_indices = np.arange(t) 
     times = librosa.frames_to_time(frame_indices, sr=sampling_frequency, hop_length=512)
 
-    return {"Chroma": chroma_stft.tolist(), "MFCC": mfcc.tolist(), "Centroid": spectral_centroid.tolist(), "STFT": STFT_db.tolist(), "Time": times.tolist()}
+    return {"Chroma": chroma_stft.tolist(), "MFCC": mfcc.tolist(), "Centroid": spectral_centroid.tolist(), "STFT": STFT_db.tolist(), "Time": times.tolist(), "SamplingFrequency": sampling_frequency}
 
 
 
