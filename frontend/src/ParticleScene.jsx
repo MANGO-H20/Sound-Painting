@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
@@ -12,17 +12,21 @@ const CustomGeometryParticles = (props) => {
   // Generate our positions attributes array
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);
-    const distance = 1;
 
-    for (let i = 0; i < count; i++) {
-      const theta = THREE.MathUtils.randFloatSpread(360);
-      const phi = THREE.MathUtils.randFloatSpread(360);
+    const cols = Math.sqrt(count);
+    const rows = Math.ceil(count / cols);
+    const spacing = 0.2; // distance between particles
+    const z = 3; // flat wall at z = 0
 
-      let x = distance * Math.sin(theta) * Math.cos(phi);
-      let y = distance * Math.sin(theta) * Math.sin(phi);
-      let z = distance * Math.cos(theta);
-
-      positions.set([x, y, z], i * 3);
+    let i = 0;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (i >= count) break;
+        const x = (c - cols / 2) * spacing;
+        const y = (r - rows / 2) * spacing;
+        positions.set([x, y, z], i * 3);
+        i++;
+      }
     }
 
     return positions;
@@ -39,7 +43,7 @@ const CustomGeometryParticles = (props) => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.012}
+        size={0.05}
         color="white"
         sizeAttenuation
         depthWrite={false}
@@ -50,11 +54,13 @@ const CustomGeometryParticles = (props) => {
 
 const ParticleScene = () => {
   return (
-    <Canvas camera={{ position: [1.5, 1.5, 1.5] }}>
-      <ambientLight intensity={0.5} />
-      <CustomGeometryParticles count={10000} />
-      <OrbitControls />
-    </Canvas>
+    <div style={{ width: "100vw", height: "50vh" }}>
+      <Canvas camera={{ position: [2.5, 2, 10] }}>
+        <ambientLight intensity={0.5} />
+        <CustomGeometryParticles count={10000} />
+        <OrbitControls />
+      </Canvas>
+    </div>
   );
 };
 

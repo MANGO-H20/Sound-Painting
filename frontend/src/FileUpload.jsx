@@ -44,12 +44,23 @@ export default function FileUpload() {
       settimeVals(res.data.Time);
       //TODO: make render for particles pass in values and sync with time
       setUploadStatus("success");
+      console.log(res.data.Chroma);
     } catch (error) {
       console.error(error);
       setUploadStatus("failed");
     }
   }
-  const assignCustomColoursChromaVals = (chromaVals) => {};
+  const assignCustomColoursChromaVals = (chromaVals) => {
+    if (!chromaVals) {
+      return;
+    }
+    console.log(chromaVals.length);
+    for (let chroma_key = 0; chroma_key < chromaVals.length; chroma_key++) {
+      for (let frame = 0; frame < chromaVals[chroma_key].length; frame++) {
+        console.log(chromaVals[chroma_key][frame]);
+      }
+    }
+  };
   function handleFileChange(e) {
     if (e.target.files) {
       setSoundFile(e.target.files[0]);

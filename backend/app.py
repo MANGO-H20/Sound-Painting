@@ -57,6 +57,8 @@ def spectrogram_creation(sound_path):
 
     # get data for the kelidoscope 
     chroma_stft = librosa.feature.chroma_stft(y=array_time, sr=sampling_frequency, n_fft=n_fft)
+    top3_colours = key_colour_top3(chroma_stft)
+
     mfcc = librosa.feature.mfcc(y=array_time, sr=sampling_frequency ,n_fft=n_fft)
     spectral_centroid = librosa.feature.spectral_centroid(y=array_time, sr=sampling_frequency, n_fft=n_fft)
 
@@ -66,7 +68,28 @@ def spectrogram_creation(sound_path):
     frame_indices = np.arange(t) 
     times = librosa.frames_to_time(frame_indices, sr=sampling_frequency, hop_length=512)
 
-    return {"Chroma": chroma_stft.tolist(), "MFCC": mfcc.tolist(), "Centroid": spectral_centroid.tolist(), "STFT": STFT_db.tolist(), "Time": times.tolist(), "SamplingFrequency": sampling_frequency}
+    return {"chroma_colours_per_frame":top3_colours, "MFCC": mfcc.tolist(), "Centroid": spectral_centroid.tolist(), "STFT": STFT_db.tolist(), "Time": times.tolist(), "SamplingFrequency": sampling_frequency}
+
+
+def key_colour_top3(chroma_stft):
+    top3_keys_indices  = (np.argsort(chroma_stft, axis=0)[-3:])[::-1]
+    key_colours = [
+        (255, 0, 0),     # C
+        (255, 127, 0),   # C#
+        (255, 255, 0),   # D
+        (127, 255, 0),   # D#
+        (0, 255, 0),     # E
+        (0, 255, 127),   # F
+        (0, 255, 255),   # F#
+        (0, 127, 255),   # G
+        (0, 0, 255),     # G#
+        (127, 0, 255),   # A
+        (255, 0, 255),   # A#
+        (255, 0, 127),   # B
+    ]
+    top3_colours_per_frame = [[key_colours[k] for k in frame] for frame in top3_keys_indices.T]
+    return top3_colours_per_frame
+
 
 
 
