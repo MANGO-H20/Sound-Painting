@@ -6,6 +6,7 @@ const config = {
   baseURL: process.env.REACT_APP_LOCAL_API,
   headers: {
     "Content-Type": "multipart/form-data",
+    "Access-Control-Allow-Origin": "*",
   },
 };
 const api = axios.create(config);
@@ -23,7 +24,8 @@ export default function FileUpload() {
 
     try {
       let res = await api.post("/upload_sound", form);
-      console.log(res);
+      console.log(res.data.Chroma);
+      console.log(res.data.Time);
       setUploadStatus("success");
     } catch (error) {
       console.error(error);
